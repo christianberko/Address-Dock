@@ -29,15 +29,20 @@ class BaseEndpoint {
     }
 
     public executeSubRoute(endPointMethod: any, req: Request, res: Response, next: NextFunction) {
-        let subRoute = req.originalUrl.split('/')[2];
-        subRoute = `${subRoute}_${req.method.toLowerCase()}`
+        try {
+            let subRoute = req.originalUrl.split('/')[2];
+            subRoute = `${subRoute}_${req.method.toLowerCase()}`
 
-        const temp = endPointMethod[subRoute as keyof typeof endPointMethod];
-        if (!temp) {
-            throw new createHttpError.BadRequest();
+            const temp = endPointMethod[subRoute as keyof typeof endPointMethod];
+            if (!temp) {
+                next(new createHttpError.BadRequest());
+                return;
+            }
+
+            temp(req, res, next);
+        } catch (err) {
+            next(err);
         }
-
-        temp(req, res, next);
     }
 }
 
