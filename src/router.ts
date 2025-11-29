@@ -5,63 +5,32 @@ import { ENV } from './constants/environment-vars.constants';
 
 const router = express.Router();
 
-// Using the * wildcard to match any route
-//covers all GET, POST, PUT, and DELETE requests
-
-
 router.get('*', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        (require(getEndpointControllerPath(req))).getRoute(req, res, next);
-    } catch (err) {
-        next(err);
-    }
+    (require(getEndpointControllerPath(req))).getRoute(req, res, next);
 });
 
 router.post('*', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        (require(getEndpointControllerPath(req))).postRoute(req, res, next);
-    } catch (err) {
-        next(err);
-    }
+    (require(getEndpointControllerPath(req))).postRoute(req, res, next);
 });
 
 router.put('*', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        (require(getEndpointControllerPath(req))).putRoute(req, res, next);
-    } catch (err) {
-        next(err);
-    }
+    (require(getEndpointControllerPath(req))).putRoute(req, res, next);
 });
 
 router.delete('*', (req: Request, res: Response, next: NextFunction) => {
-    try {
-        (require(getEndpointControllerPath(req))).deleteRoute(req, res, next);
-    } catch (err) {
-        next(err);
-    }
+    (require(getEndpointControllerPath(req))).deleteRoute(req, res, next);
 });
 
 function getEndpointControllerPath(req: Request): string {
-    // Extracting endpoint name from URL "/address/count" -> "address"
-    const urlParts = req.baseUrl.split('/');
-    const endpointName = urlParts[1];
-    
-    // Checking if endpoint name is missing/invalid
-    if (!endpointName || endpointName === 'base') {
+    const paths = req.baseUrl.split('/');
+
+    const ext = (ENV === 'dev') ? 'ts' : 'js';
+    const route = `${__dirname}/endpoints/${paths[1]}.endpoint.${ext}`;
+    if (paths.length === 1 || !fs.existsSync(route) || paths[1] == 'base') {
         throw new createHttpError.BadRequest();
     }
-    
-    // Build file path 
-    const fileExtension = (ENV === 'dev') ? 'ts' : 'js';
-    const filePath = `${__dirname}/endpoints/${endpointName}.endpoint.${fileExtension}`;
-    
-    // Checking if the endpoint file exists
-    if (!fs.existsSync(filePath)) {
-        throw new createHttpError.BadRequest();
-    }
-    
-    
-    return filePath;
+
+    return route;
 }
 
 export default router;

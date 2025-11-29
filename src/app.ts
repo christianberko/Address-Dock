@@ -29,15 +29,10 @@ app.use(async (req, res: Response, next: NextFunction) => {
 
 app.use(async (err: any, req: Request, res: Response, next: NextFunction) => {
     loggerService.error({ message: err.message, path: req.path }).flush();
-    
-    // Use the error's status code if available, otherwise default to 500
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Error";
-    
-    res.status(status).send({
+    res.status(500).send({
         error: {
-            status: status,
-            message: message,
+            status: 500,
+            message: "Internal Error",
         }
     });
 });
