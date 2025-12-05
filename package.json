@@ -7,9 +7,10 @@
       "node": "20.13.1"
     },
     "scripts": {
-      "prebuild": "rm -rf ./dist",
       "build": "tsc --project ./",
-      "dev": "nodemon ./src/server.ts"
+      "dev": "nodemon ./src/server.ts",
+      "test": "jest",
+      "test:watch": "jest --watch"
     },
     "repository": {
       "type": "git",
