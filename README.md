@@ -9,6 +9,53 @@
 5. In the .env file set `ENV` to "dev"
 6. Start the app using `npm run dev`
 
-## Use
+## API Endpoints
 
-- Using Postman or building an integration, send a request using "http://localhost:<port>/address/request"
+All endpoints use POST requests to `http://localhost:<port>/address/<endpoint>`
+
+### `/address/request`
+Sends request to upstream address API.
+json
+`{"city": "Rochester"}`
+
+
+### `/address/count`
+Counts addresses from request body.
+json
+`{"city": "Rochester"}`
+
+
+### `/address/distance`
+Calculates distance between two coordinates. Returns kilometers and/or miles.
+```json
+{"lat1": 43.1545, "lon1": -77.6159, "lat2": 40.7128, "lon2": -74.0060, "unit": "both"}
+```
+`unit` options: `"both"`, `"km"`, or `"mi"`
+
+### `/address/zipcode`
+Looks up city name from zipcode.
+```json
+{"zipcode": "14623"}
+```
+
+### `/health`
+Health check endpoint (GET request).
+
+## Additional Commands
+
+- `npm run build` - Build app
+- `npm test` - Run tests
+- `./build.sh` - Full build pipeline (builds Docker image and runs container)
+- `./profile.sh` - Monitor CPU and memory usage
+- `./health-check.sh` - Verify server is responding
+
+To make requests while contanier is running:
+
+## Running in Docker
+
+After running `./build.sh`, the container runs on port 4900. Make requests to:
+- `http://localhost:4900/address/<endpoint>`
+- `http://localhost:4900/health` (GET request)
+
+
+
